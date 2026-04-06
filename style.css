@@ -1,0 +1,192 @@
+:root {
+    --bg-base: #1a2a3a;
+    --accent: #88ccf0;
+    --text-white: #ffffff;
+    --text-muted: #999999;
+    --text-helper: #666666;
+    --input-bg: rgba(250, 250, 250, 0.18);
+    --card-bg: rgba(0, 0, 0, 0.35);
+    --btn-blue: #3182ce;
+    --grad-lulus: linear-gradient(to right, #083661, #006CBF);
+    --grad-fail: linear-gradient(to right, #c83b26, #dc4e2e);
+    --blur: blur(8px);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-white);
+    min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Background Texture */
+.main-background {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.4) saturate(1.2);
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+.main-background.loaded { opacity: 1; }
+
+.main { 
+    width: 100%; 
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; 
+    z-index: 10; 
+}
+
+.container { 
+    width: 100%; 
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem; 
+}
+
+/* Base Card Style (Chakra-like) */
+.chakra-card {
+    background: var(--card-bg);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: scaleFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleFadeIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ---------------------------------------------------
+   LANDING CARD (FORM)
+   --------------------------------------------------- */
+.form-card {
+    width: 100%;
+    max-width: 700px;
+    padding: 32px;
+}
+
+.label-chakra {
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.input-chakra {
+    background: var(--input-bg);
+    border: none;
+    border-radius: 5px;
+    color: white;
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.input-chakra:focus {
+    background: rgba(250, 250, 250, 0.25);
+}
+
+.btn-chakra {
+    background-color: var(--btn-blue);
+    color: white;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn-chakra:hover {
+    filter: brightness(1.1);
+}
+
+/* ---------------------------------------------------
+   RESULT CARD (V2)
+   --------------------------------------------------- */
+.result-card-v2 {
+    width: 100%;
+    max-width: 1200px;
+    overflow: hidden;
+}
+
+.banner-v2 {
+    width: 100%;
+    padding: 42px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner-v2.lulus { background: var(--grad-lulus); }
+.banner-v2.fail { background: var(--grad-fail); }
+
+.identity-section {
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.data-grid-v2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 32px;
+    padding: 24px 32px;
+}
+
+.info-col { display: flex; flex-direction: column; gap: 20px; }
+.info-label { color: var(--accent); font-size: 0.9rem; font-weight: 900; text-transform: uppercase; }
+.info-val { color: white; font-size: 1.1rem; font-weight: 900; }
+
+.skl-white-box {
+    background: white;
+    padding: 24px;
+    border-radius: 6px;
+    color: #2d2d2d;
+}
+
+.footer-v2 {
+    padding: 24px 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-align: justify;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .data-grid-v2 { grid-template-columns: 1fr; }
+    .identity-section { flex-direction: column-reverse; align-items: flex-start; gap: 2rem; }
+    .banner-v2 h1 { font-size: 1.1rem; }
+}
