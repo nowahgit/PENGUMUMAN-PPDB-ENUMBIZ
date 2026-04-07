@@ -21,7 +21,7 @@ try {
 
     // Current periods status logic based on native project structure
     $stmt = $pdo->prepare("
-        SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus 
+        SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup 
         FROM selection_periods 
         WHERE status = 'AKTIF' 
         ORDER BY id_periode DESC 

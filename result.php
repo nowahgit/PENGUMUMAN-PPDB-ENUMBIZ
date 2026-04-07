@@ -26,13 +26,13 @@ try {
     $pdo = getDB();
 
     // 1. Cari periode aktif
-    $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus FROM selection_periods WHERE status = :status ORDER BY id_periode DESC LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup FROM selection_periods WHERE status = :status ORDER BY id_periode DESC LIMIT 1");
     $stmt->execute(['status' => 'AKTIF']);
     $period = $stmt->fetch();
 
     if (!$period) {
         // Fallback ambil terbaru jika gak ada yang aktif
-        $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus FROM selection_periods ORDER BY id_periode DESC LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup FROM selection_periods ORDER BY id_periode DESC LIMIT 1");
         $stmt->execute();
         $period = $stmt->fetch();
     }
