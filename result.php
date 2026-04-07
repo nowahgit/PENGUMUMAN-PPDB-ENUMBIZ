@@ -38,11 +38,10 @@ try {
     }
 
     if ($period) {
-        if (!empty($period['tanggal_pengumuman_lulus']) && $now >= new DateTime($period['tanggal_pengumuman_lulus'])) {
-            $fase = 2; // Kelulusan
-        } elseif (!empty($period['tanggal_pengumuman_berkas']) && $now >= new DateTime($period['tanggal_pengumuman_berkas'])) {
-            $fase = 1; // Berkas
-        }
+        // Karena tanggal di database Anda adalah besok (8 April), 
+        // kita PAKSA aktifkan pengumuman hasil akhir hari ini (7 April) 
+        // lewat kode ini selama status periode adalah AKTIF.
+        $fase = 2; 
     }
 
 

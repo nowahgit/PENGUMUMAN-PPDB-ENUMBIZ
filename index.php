@@ -40,14 +40,8 @@ try {
     $target_date = null;
     if ($period) {
         $now_ts = time();
-        $berkas_ts = !empty($period['tanggal_pengumuman_berkas']) ? strtotime($period['tanggal_pengumuman_berkas']) : 0;
-        $lulus_ts = !empty($period['tanggal_pengumuman_lulus']) ? strtotime($period['tanggal_pengumuman_lulus']) : 0;
-
-        if ($berkas_ts > $now_ts) {
-            $target_date = $period['tanggal_pengumuman_berkas'];
-        } elseif ($lulus_ts > $now_ts) {
-            $target_date = $period['tanggal_pengumuman_lulus'];
-        }
+        $isRegistrationOpen = ($period['status'] === 'AKTIF'); // Buka jika AKTIF tanpa cek tanggal
+        $target_date = null; // Countdown dihilangkan karena sudah buka
     }
 } catch (Exception $e) {
     $db_error = $e->getMessage();
