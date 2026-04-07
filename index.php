@@ -37,9 +37,22 @@ try {
     } else {
         $isRegistrationOpen = false;
     }
+    $target_date = null;
+    if ($period) {
+        $now_ts = time();
+        $berkas_ts = !empty($period['tanggal_pengumuman_berkas']) ? strtotime($period['tanggal_pengumuman_berkas']) : 0;
+        $lulus_ts = !empty($period['tanggal_pengumuman_lulus']) ? strtotime($period['tanggal_pengumuman_lulus']) : 0;
+
+        if ($berkas_ts > $now_ts) {
+            $target_date = $period['tanggal_pengumuman_berkas'];
+        } elseif ($lulus_ts > $now_ts) {
+            $target_date = $period['tanggal_pengumuman_lulus'];
+        }
+    }
 } catch (Exception $e) {
-    $db_error = $e->getMessage(); // Simpan pesan error asli
+    $db_error = $e->getMessage();
 }
+
 
 // Redirect if it's already an auth context? Not applicable for native portal.
 ?>
@@ -185,7 +198,23 @@ try {
                     Pastikan data yang Anda masukkan sesuai dengan kartu pendaftaran.
                 </p>
 
-                <!-- NEW: Integrated Search Form for Announcement Portal -->
+                <!-- NEW: Countdown Section -->
+                <?php if (!$isRegistrationOpen && $target_date): ?>
+                    <div id="countdown-wrapper" class="py-4 px-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-3xl inline-flex flex-col gap-2">
+                        <p class="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-widest uppercase">Pengumuman Dibuka Dalam:</p>
+                        <div class="flex gap-4 text-center">
+                            <div class="flex flex-col"><span id="days" class="text-2xl font-black text-blue-700 dark:text-blue-300">00</span><span class="text-[10px] uppercase font-bold opacity-50">Hari</span></div>
+                            <div class="text-2xl font-black opacity-30">:</div>
+                            <div class="flex flex-col"><span id="hours" class="text-2xl font-black text-blue-700 dark:text-blue-300">00</span><span class="text-[10px] uppercase font-bold opacity-50">Jam</span></div>
+                            <div class="text-2xl font-black opacity-30">:</div>
+                            <div class="flex flex-col"><span id="minutes" class="text-2xl font-black text-blue-700 dark:text-blue-300">00</span><span class="text-[10px] uppercase font-bold opacity-50">Menit</span></div>
+                            <div class="text-2xl font-black opacity-30">:</div>
+                            <div class="flex flex-col"><span id="seconds" class="text-2xl font-black text-blue-700 dark:text-blue-300">00</span><span class="text-[10px] uppercase font-bold opacity-50">Detik</span></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Search Form -->
                 <div class="pt-2 w-full max-w-md">
                     <form action="result.php" method="GET" class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -273,5 +302,31 @@ try {
             }
         });
     </script>
+    <?php if (!$isRegistrationOpen && $target_date): ?>
+    <script>
+        const targetDate = new Date("<?= $target_date ?>").getTime();
+
+        const updateCountdown = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(updateCountdown);
+                location.reload(); // Reload saat waktu habis
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+        }, 1000);
+    </script>
+    <?php endif; ?>
 </body>
 </html>
