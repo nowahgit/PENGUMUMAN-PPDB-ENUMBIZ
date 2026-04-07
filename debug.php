@@ -12,8 +12,13 @@ echo "2. Test koneksi...<br>";
 try {
     $pdo = getDB();
     echo "✅ Koneksi berhasil!<br><br>";
+} catch (PDOException $e) {
+    echo "❌ <b>Gagal Koneksi PDO:</b> " . $e->getMessage() . "<br>";
+    echo "Host: " . DB_HOST . "<br>";
+    echo "User: " . DB_USER . "<br>";
+    die();
 } catch (Exception $e) {
-    echo "❌ Gagal: " . $e->getMessage() . "<br>";
+    echo "❌ <b>Error:</b> " . $e->getMessage() . "<br>";
     die();
 }
 

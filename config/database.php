@@ -7,7 +7,7 @@
 date_default_timezone_set('Asia/Jakarta');
 
 // Deteksi Environment
-$is_local = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['HTTP_HOST'] == '127.0.0.1' || str_contains($_SERVER['HTTP_HOST'], '.test'));
+$is_local = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['HTTP_HOST'] == '127.0.0.1' || strpos($_SERVER['HTTP_HOST'], '.test') !== false);
 
 if ($is_local) {
     define('DB_HOST', '127.0.0.1');
@@ -16,8 +16,8 @@ if ($is_local) {
     define('DB_USER', 'root');
     define('DB_PASS', '');
 } else {
-    // Kredensial Produksi (cPanel) - Disamakan dengan portal utama/testdb.php
-    define('DB_HOST', 'localhost'); // Gunakan localhost di cPanel
+    // Kredensial Produksi (cPanel) - Disamakan dengan portal utama
+    define('DB_HOST', '127.0.0.1'); // Mengikuti config .env portal utama Anda
     define('DB_PORT', '3306');
     define('DB_NAME', 'elnoahma_portalppdbenumbiz');
     define('DB_USER', 'elnoahma_portaluser');

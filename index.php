@@ -12,12 +12,13 @@ if (function_exists('enforceRateLimit')) {
     enforceRateLimit();
 }
 
-$pdo = getDB();
 $db_error = false;
 $isRegistrationOpen = false;
 $period = null;
 
 try {
+    $pdo = getDB();
+
     // Current periods status logic based on native project structure
     $stmt = $pdo->prepare("
         SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus 
