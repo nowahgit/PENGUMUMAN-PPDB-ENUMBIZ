@@ -59,10 +59,11 @@ try {
             LEFT JOIN berkas b ON b.user_id = u.id
             LEFT JOIN seleksis s ON s.user_id = u.id
             WHERE u.role = 'PENDAFTAR'
-              AND (u.nisn_pendaftar = :query OR u.nomor_pendaftaran = :query)
+              AND (u.nisn_pendaftar = :q1 OR u.nomor_pendaftaran = :q2)
             LIMIT 1
         ");
-        $stmt->execute(['query' => $query]);
+        $stmt->execute(['q1' => $query, 'q2' => $query]);
+
         $pendaftar = $stmt->fetch();
 
         if (!$pendaftar) {
