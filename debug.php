@@ -2,34 +2,45 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Test 1: Load config
-echo "1. Load config...<br>";
 require_once __DIR__ . '/config/database.php';
-echo "✅ Config loaded<br><br>";
 
-// Test 2: Koneksi DB
-echo "2. Test koneksi...<br>";
+echo "<h2>Portal Debugging — PPDB Enumbiz</h2>";
+
 try {
     $pdo = getDB();
-    echo "✅ Koneksi berhasil!<br><br>";
-} catch (PDOException $e) {
-    echo "❌ <b>Gagal Koneksi PDO:</b> " . $e->getMessage() . "<br>";
+    echo "✅ <b>Koneksi Database</b>: Berhasil!<br>";
     echo "Host: " . DB_HOST . "<br>";
-    echo "User: " . DB_USER . "<br>";
-    die();
-} catch (Exception $e) {
-    echo "❌ <b>Error:</b> " . $e->getMessage() . "<br>";
-    die();
-}
+    echo "Waktu Server: " . date('Y-m-d H:i:s') . "<br><br>";
 
-// Test 3: Struktur Tabel
-$tables = ['selection_periods', 'users', 'berkas', 'seleksis'];
-foreach ($tables as $table) {
-    echo "<h3>Tabel: $table</h3>";
-    try {
-        $cols = $pdo->query("DESCRIBE $table")->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($cols as $col) echo "- " . $col['Field'] . " (" . $col['Type'] . ")<br>";
-    } catch (Exception $e) {
-        echo "❌ Gagal: " . $e->getMessage() . "<br>";
+    // Dump Data Periode Aktif
+    echo "<h3>1. Periode Aktif (selection_periods)</h3>";
+    $period = $pdo->query("SELECT id_periode, nama_periode, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus, status FROM selection_periods WHERE status = 'AKTIF' LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    
+    if ($period) {
+        echo "<table border='1' cellpadding='5' style='border-collapse: collapse;'>";
+        echo "<tr><th>ID</th><th>Nama</th><th>Tgl Pengumuman Berkas</th><th>Tgl Pengumuman Lulus</th><th>Status</th></tr>";
+        echo "<tr>";
+        echo "<td>{$period['id_periode']}</td>";
+        echo "<td>{$period['nama_periode']}</td>";
+        echo "<td>{$period['tanggal_pengumuman_berkas']}</td>";
+        echo "<td>{$period['tanggal_pengumuman_lulus']}</td>";
+        echo "<td>{$period['status']}</td>";
+        echo "</html>";
+        echo "</table>";
+        
+        $now = time();
+        $berkas = strtotime($period['tanggal_pengumuman_berkas']);
+        $lulus = strtotime($period['tanggal_pengumuman_lulus']);
+        
+        echo "<br><b>Pengecekan Waktu:</b><br>";
+        echo "Sekarang: " . date('Y-m-d H:i:s', $now) . "<br>";
+        echo "Status Fase 1 (Berkas): " . ($now >= $berkas ? "✅ SUDAH DIBUKA" : "❌ BELUM DIBUKA") . "<br>";
+        echo "Status Fase 2 (Final): " . ($now >= $lulus ? "✅ SUDAH DIBUKA" : "❌ BELUM DIBUKA") . "<br>";
+        
+    } else {
+        echo "❌ Tidak ada periode dengan status 'AKTIF'!";
     }
-}
+
+} catch (Exception $e) {
+    echo "❌ <b>Error:</b> " . $e->getMessage();
+}
