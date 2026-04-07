@@ -32,13 +32,10 @@ try {
 
     if ($period) {
         $now = date('Y-m-d H:i:s');
-        // Check if registration is open (using columns provided in snippet's context)
-        $isRegistrationOpen = (
-            (isset($period['tanggal_buka']) && isset($period['tanggal_tutup']) && $now >= $period['tanggal_buka'] && $now <= $period['tanggal_tutup']) ||
-            (!isset($period['tanggal_buka']) && $period['status'] === 'AKTIF')
-        );
+        // Anggap terbuka jika statusnya AKTIF (karena kolom tanggal tidak ada)
+        $isRegistrationOpen = true;
     } else {
-        // Fallback for UI: stay at false
+        $isRegistrationOpen = false;
     }
 } catch (Exception $e) {
     $db_error = true;

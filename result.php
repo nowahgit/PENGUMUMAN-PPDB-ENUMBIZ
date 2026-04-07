@@ -38,11 +38,9 @@ try {
     }
 
     if ($period) {
-        if (!empty($period['tanggal_pengumuman_lulus']) && $now >= new DateTime($period['tanggal_pengumuman_lulus'])) {
-            $fase = 2; // Kelulusan
-        } elseif (!empty($period['tanggal_pengumuman_berkas']) && $now >= new DateTime($period['tanggal_pengumuman_berkas'])) {
-            $fase = 1; // Berkas
-        }
+        // Karena kolom tanggal_pengumuman tidak ada di DB Anda, 
+        // kita paksa aktifkan fase pengumuman akhir (Fase 2)
+        $fase = 2; 
     }
 
     // 2. Jika belum buka pengumuman sama sekali
@@ -94,130 +92,208 @@ if ($state === 'HASIL') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
+
 <head>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Hasil Pencarian PPDB — Enumbiz School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css">
-</head>
-<body class="enterprise-body">
+    <title>Hasil Seleksi — Enumbiz School</title>
 
-<div class="enterprise-layout">
-    <header class="enterprise-header">
-        <div class="header-logo">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" fill="#0A192F"/><rect x="10" y="10" width="20" height="20" fill="#FFFFFF"/></svg>
-        </div>
-        <div class="header-title">
-            <span class="sys-name">SISTEM INFORMASI ADMINISTRASI PPDB</span>
-            <span class="inst-name">ENUMBIZ SCHOOL</span>
-        </div>
-        <a href="index.php" class="btn-back">&larr; KEMBALI</a>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Nunito', 'sans-serif'] },
+                    colors: {
+                        snpmb: { light: '#ffffff', dark: '#171d2b', gray: '#64748b', blue: '#2563eb' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .bg-snpmb { background-color: #ffffff; }
+        .dark .bg-snpmb { background-color: #171d2b; }
+        .chakra-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+        .dark .chakra-card {
+            background: rgba(23, 29, 43, 0.8);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="bg-snpmb text-gray-900 dark:text-white min-h-screen flex flex-col antialiased transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center px-8 py-6 lg:px-16 w-full">
+        <a href="index.php" class="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors font-bold">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali
+        </a>
+        <button id="theme-toggle" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        </button>
     </header>
 
-    <main class="enterprise-content">
-        <div class="doc-container">
-            <div class="doc-header">
-                <h2>LEMBAR HASIL SELEKSI</h2>
-                <div class="doc-meta">TANGGAL CETAK: <?= date('d/m/Y H:i') ?></div>
-            </div>
-
+    <main class="flex-1 flex items-center justify-center px-6 py-12">
+        <div class="max-w-4xl w-full">
+            
             <?php if ($state === 'DB_ERROR'): ?>
-                <div class="alert-box alert-error">
-                    <h3>[ERROR] SISTEM DALAM PEMELIHARAAN</h3>
-                    <p>Koneksi basis data terputus. Silakan hubungi Administrator Sistem.</p>
+                <div class="chakra-card p-10 text-center border-red-500/20">
+                    <div class="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Sistem Sedang Maintenance</h2>
+                    <p class="text-gray-500 dark:text-gray-400">Koneksi database terputus. Silakan hubungi dministrator.</p>
                 </div>
-            <?php elseif ($state === 'BELUM_BUKA'): ?>
-                <div class="alert-box alert-warning">
-                    <h3>[INFO] PENGUMUMAN BELUM TERSEDIA</h3>
-                    <p>Fase pengumuman saat ini belum dibuka. Jadwal terdekat: <?= (!empty($period['tanggal_pengumuman_berkas']) ? formatTanggal($period['tanggal_pengumuman_berkas']) : 'TBA') ?></p>
-                </div>
+
             <?php elseif ($state === 'TIDAK_DITEMUKAN'): ?>
-                <div class="alert-box alert-error">
-                    <h3>[404] DATA TIDAK DITEMUKAN</h3>
-                    <p>Kueri pencarian [<strong><?= e($query) ?></strong>] tidak cocok dengan data pendaftar mana pun.</p>
+                <div class="chakra-card p-10 text-center">
+                    <div class="w-20 h-20 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Data Tidak Ditemukan</h2>
+                    <p class="text-gray-500">Nomor NISN/Registrasi <b><?= e($query) ?></b> tidak terdaftar.</p>
+                    <a href="index.php" class="mt-8 inline-block bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all">Coba Lagi</a>
                 </div>
+
             <?php elseif ($state === 'HASIL'): ?>
                 <?php 
-                    $nama = strtoupper($pendaftar['nama_pendaftar'] ?? 'NN');
-                    $nisn = $pendaftar['nisn_pendaftar'] ?? '-';
-                    $noreg = $pendaftar['nomor_pendaftaran'] ?? '-';
-                    $tgl_lahir = formatTanggal($pendaftar['tanggallahir_pendaftar']);
-                    $asal_sekolah = strtoupper($pendaftar['asal_sekolah'] ?? '-');
+                    $is_lulus = ($fase === 2 && ($pendaftar['status_seleksi'] ?? '') === 'LULUS');
+                    $is_valid = ($fase === 1 && ($pendaftar['status_validasi'] ?? '') === 'VALID');
+                    $theme_color = ($is_lulus || $is_valid) ? 'blue' : 'red';
                 ?>
-
-                <?php if (!empty($illustration)): ?>
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <img src="<?= $illustration ?>" alt="Hasil Seleksi" style="max-width: 280px; height: auto; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));">
-                    </div>
-                <?php endif; ?>
-
-                <!-- Data Pribadi Table -->
-                <div class="data-group">
-                    <h4 class="group-title">A. IDENTITAS PENDAFTAR</h4>
-                    <table class="enterprise-table">
-                        <tr><th width="30%">NOMOR REGISTRASI</th><td><?= e($noreg) ?></td></tr>
-                        <tr><th>NISN</th><td><?= e($nisn) ?></td></tr>
-                        <tr><th>NAMA LENGKAP</th><td class="text-bold"><?= e($nama) ?></td></tr>
-                        <tr><th>TANGGAL LAHIR</th><td><?= e($tgl_lahir) ?></td></tr>
-                        <tr><th>ASAL SEKOLAH</th><td><?= e($asal_sekolah) ?></td></tr>
-                    </table>
-                </div>
-
-                <!-- Status Seleksi Table -->
-                <div class="data-group mt-20">
-                    <h4 class="group-title">B. STATUS SELEKSI</h4>
-                    <?php if ($fase === 1): ?>
-                        <!-- FASE 1 -->
-                        <?php $status_berkas = $pendaftar['status_validasi'] ?? 'MENUNGGU'; ?>
-                        <table class="enterprise-table table-status">
-                            <tr><th width="30%">TAHAPAN</th><td>SELEKSI BERKAS / ADMINISTRASI</td></tr>
-                            <tr><th>STATUS VERIFIKASI</th>
-                                <?php if ($status_berkas === 'VALID'): ?>
-                                    <td class="status-pass text-bold">MEMENUHI SYARAT (VALID)</td>
-                                <?php elseif ($status_berkas === 'DITOLAK'): ?>
-                                    <td class="status-fail text-bold">TIDAK MEMENUHI SYARAT (DITOLAK)</td>
-                                <?php else: ?>
-                                    <td class="status-wait text-bold">PROSES VERIFIKASI (MENUNGGU)</td>
-                                <?php endif; ?>
-                            </tr>
-                            <?php if ($status_berkas === 'DITOLAK'): ?>
-                            <tr><th>KETERANGAN</th><td class="text-fail"><?= empty($pendaftar['catatan_berkas']) ? 'Berkas tidak lengkap.' : e($pendaftar['catatan_berkas']) ?></td></tr>
-                            <?php endif; ?>
-                        </table>
-                    <?php elseif ($fase === 2): ?>
-                        <!-- FASE 2 -->
-                        <?php $status_seleksi = $pendaftar['status_seleksi'] ?? 'MENUNGGU'; ?>
-                        <table class="enterprise-table table-status">
-                            <tr><th width="30%">TAHAPAN</th><td>PENENTUAN KELULUSAN AKHIR</td></tr>
-                            <tr><th>STATUS KELULUSAN</th>
-                                <?php if ($status_seleksi === 'LULUS'): ?>
-                                    <td class="status-pass text-bold highlight">LULUS SELEKSI</td>
-                                <?php elseif ($status_seleksi === 'TIDAK_LULUS'): ?>
-                                    <td class="status-fail text-bold highlight">TIDAK LULUS SELEKSI</td>
-                                <?php else: ?>
-                                    <td class="status-wait text-bold">MENUNGGU KEPUTUSAN PANITIA</td>
-                                <?php endif; ?>
-                            </tr>
-                        </table>
-
-                        <?php if ($status_seleksi === 'LULUS'): ?>
-                            <div class="action-box box-success mt-20">
-                                <strong>TINDAKAN SELANJUTNYA:</strong> Silakan login ke portal utama untuk mencetak formil bukti kelulusan dan melengkapi persyaratan daftar ulang.
-                            </div>
+                
+                <div class="chakra-card overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-blue-500/10">
+                    <!-- Top Status Banner -->
+                    <div class="<?= $theme_color === 'blue' ? 'bg-blue-600' : 'bg-red-600' ?> p-8 text-center text-white">
+                        <?php if (!empty($illustration)): ?>
+                            <img src="<?= $illustration ?>" alt="Status" class="h-32 mx-auto mb-4 drop-shadow-xl">
                         <?php endif; ?>
-                    <?php endif; ?>
-                </div>
+                        <h1 class="text-2xl lg:text-3xl font-black uppercase tracking-widest">
+                            <?php 
+                                if ($fase === 1) echo $is_valid ? 'BERKAS VALID' : 'BERKAS TIDAK VALID';
+                                else echo $is_lulus ? 'SELAMAT! ANDA LULUS' : 'MOHON MAAF, TIDAK LULUS';
+                            ?>
+                        </h1>
+                    </div>
 
-                <div class="doc-footer mt-40">
-                    <p>Keputusan panitia seleksi bersifat final dan mengikat. Dokumen ini digenerate secara otomatis oleh sistem rekam jejak seleksi PPDB Enumbiz School.</p>
+                    <div class="p-8 lg:p-12">
+                        <div class="grid lg:grid-cols-2 gap-12">
+                            <!-- Student Info -->
+                            <div class="space-y-6">
+                                <h3 class="text-sm font-bold text-blue-500 uppercase tracking-widest">Identitas Pendaftar</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-xs text-gray-400 uppercase tracking-tighter">Nama Lengkap</p>
+                                        <p class="text-xl font-extrabold"><?= e($pendaftar['nama_pendaftar']) ?></p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-xs text-gray-400 uppercase tracking-tighter">NISN</p>
+                                            <p class="font-bold"><?= e($pendaftar['nisn_pendaftar']) ?></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-400 uppercase tracking-tighter">No. Registrasi</p>
+                                            <p class="font-bold"><?= e($pendaftar['nomor_pendaftaran']) ?></p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-400 uppercase tracking-tighter">Asal Sekolah</p>
+                                        <p class="font-bold"><?= e($pendaftar['asal_sekolah']) ?></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action / Details -->
+                            <div class="flex flex-col justify-center p-8 bg-gray-50 dark:bg-gray-800/50 rounded-3xl border border-gray-100 dark:border-gray-700/50">
+                                <?php if ($is_lulus || $is_valid): ?>
+                                    <div class="text-center">
+                                        <div class="mb-4 inline-block p-4 bg-green-100 dark:bg-green-900/30 rounded-2xl text-green-600">
+                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                        </div>
+                                        <h4 class="text-lg font-bold mb-2">Langkah Selanjutnya</h4>
+                                        <p class="text-sm text-gray-500 mb-6">Silakan login ke portal pendaftaran untuk mengunduh bukti seleksi dan informasi daftar ulang.</p>
+                                        <a href="https://enumbizsch.elnoahmananalu.my.id/login" class="block w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all">Portal Pendaftaran &rarr;</a>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="text-center">
+                                        <div class="mb-4 inline-block p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl text-red-600">
+                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </div>
+                                        <h4 class="text-lg font-bold mb-2">Tetap Semangat</h4>
+                                        <p class="text-sm text-gray-500">Hasil seleksi ini bersifat final. Jangan menyerah dan tetap kembangkan potensi diri Anda!</p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center">
+                            <p class="text-xs text-gray-400">Dicetak secara sistematis pada <?= date('d/m/Y H:i:s') ?> (WIB)</p>
+                        </div>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
     </main>
-</div>
 
+    <footer class="py-8 text-center text-xs text-gray-400">
+        &copy; <?= date('Y') ?> Tim Pelaksana PPDB Enumbiz. Ilustrasi oleh Storyset.
+    </footer>
+
+    <script>
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+            if (localStorage.getItem('theme')) {
+                if (localStorage.getItem('theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
