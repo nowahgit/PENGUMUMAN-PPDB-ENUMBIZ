@@ -21,7 +21,7 @@ try {
 
     // Current periods status logic based on native project structure
     $stmt = $pdo->prepare("
-        SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup 
+        SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus 
         FROM selection_periods 
         WHERE status = 'AKTIF' 
         ORDER BY id_periode DESC 
@@ -38,7 +38,7 @@ try {
         $isRegistrationOpen = false;
     }
 } catch (Exception $e) {
-    $db_error = true;
+    $db_error = $e->getMessage(); // Simpan pesan error asli
 }
 
 // Redirect if it's already an auth context? Not applicable for native portal.
@@ -167,7 +167,8 @@ try {
                 <?php if ($db_error): ?>
                     <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-xl text-red-700 dark:text-red-400">
                         <p class="font-bold">Koneksi Database Gagal</p>
-                        <p class="text-sm">Mohon hubungi administrator jika masalah berlanjut.</p>
+                        <p class="text-xs opacity-80 mt-1">Error: <?= $db_error ?></p>
+                        <p class="text-sm mt-2">Mohon hubungi administrator jika masalah berlanjut.</p>
                     </div>
                 <?php endif; ?>
 

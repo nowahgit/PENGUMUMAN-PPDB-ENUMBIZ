@@ -26,22 +26,25 @@ try {
     $pdo = getDB();
 
     // 1. Cari periode aktif
-    $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup FROM selection_periods WHERE status = :status ORDER BY id_periode DESC LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus FROM selection_periods WHERE status = :status ORDER BY id_periode DESC LIMIT 1");
     $stmt->execute(['status' => 'AKTIF']);
     $period = $stmt->fetch();
 
     if (!$period) {
         // Fallback ambil terbaru jika gak ada yang aktif
-        $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup FROM selection_periods ORDER BY id_periode DESC LIMIT 1");
+        $stmt = $pdo->prepare("SELECT id_periode, nama_periode, tanggal_buka, tanggal_tutup, tanggal_pengumuman_berkas, tanggal_pengumuman_lulus FROM selection_periods ORDER BY id_periode DESC LIMIT 1");
         $stmt->execute();
         $period = $stmt->fetch();
     }
 
     if ($period) {
-        // Karena kolom tanggal_pengumuman tidak ada di DB Anda, 
-        // kita paksa aktifkan fase pengumuman akhir (Fase 2)
-        $fase = 2; 
+        if (!empty($period['tanggal_pengumuman_lulus']) && $now >= new DateTime($period['tanggal_pengumuman_lulus'])) {
+            $fase = 2; // Kelulusan
+        } elseif (!empty($period['tanggal_pengumuman_berkas']) && $now >= new DateTime($period['tanggal_pengumuman_berkas'])) {
+            $fase = 1; // Berkas
+        }
     }
+
 
     // 2. Jika belum buka pengumuman sama sekali
     if ($fase === 0) {
@@ -169,6 +172,7 @@ if ($state === 'HASIL') {
                     </div>
                     <h2 class="text-2xl font-bold mb-2">Sistem Sedang Maintenance</h2>
                     <p class="text-gray-500 dark:text-gray-400">Koneksi database terputus. Silakan hubungi dministrator.</p>
+                    <p class="text-xs text-red-500 mt-4 opacity-70">Error: <?= $e->getMessage() ?></p>
                 </div>
 
             <?php elseif ($state === 'TIDAK_DITEMUKAN'): ?>
