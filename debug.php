@@ -22,9 +22,14 @@ try {
     die();
 }
 
-// Test 3: Cek kolom selection_periods
-echo "3. Struktur tabel selection_periods:<br>";
-$cols = $pdo->query("DESCRIBE selection_periods")->fetchAll(PDO::FETCH_ASSOC);
-foreach ($cols as $col) {
-    echo "- " . $col['Field'] . " (" . $col['Type'] . ")<br>";
-}
+// Test 3: Struktur Tabel
+$tables = ['selection_periods', 'users', 'berkas', 'seleksis'];
+foreach ($tables as $table) {
+    echo "<h3>Tabel: $table</h3>";
+    try {
+        $cols = $pdo->query("DESCRIBE $table")->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($cols as $col) echo "- " . $col['Field'] . " (" . $col['Type'] . ")<br>";
+    } catch (Exception $e) {
+        echo "❌ Gagal: " . $e->getMessage() . "<br>";
+    }
+}
