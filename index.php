@@ -2,6 +2,8 @@
 /**
  * Project B — Portal Pengumuman PPDB Enumbiz
  */
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require_once __DIR__ . '/config/database.php';
 

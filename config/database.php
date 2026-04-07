@@ -6,11 +6,23 @@
 
 date_default_timezone_set('Asia/Jakarta');
 
-define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3307');
-define('DB_NAME', 'ppdb_enumbiz');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// Deteksi Environment
+$is_local = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['HTTP_HOST'] == '127.0.0.1' || str_contains($_SERVER['HTTP_HOST'], '.test'));
+
+if ($is_local) {
+    define('DB_HOST', '127.0.0.1');
+    define('DB_PORT', '3307');
+    define('DB_NAME', 'ppdb_enumbiz');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+} else {
+    // Kredensial Produksi (cPanel) - Disamakan dengan portal utama/testdb.php
+    define('DB_HOST', 'localhost'); // Gunakan localhost di cPanel
+    define('DB_PORT', '3306');
+    define('DB_NAME', 'elnoahma_portalppdbenumbiz');
+    define('DB_USER', 'elnoahma_portaluser');
+    define('DB_PASS', 'pudingcoklatpakhambali');
+}
 
 function getDB(): PDO {
     static $pdo = null;
